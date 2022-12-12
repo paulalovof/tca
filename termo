@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+int main()
+{
+    char palavra[5][5] = {"termo", "facil", "curso", "arara", "beijo"}, digitada[5], aux[5] = {"aaaaa"};
+    int tamanho, numero, i, j, tentativas, a=0, b=0, igual;
+    srand(time(NULL));
+    
+    //gerando numero aleatorio pra palavra
+    numero = 1+rand() %4;
+    for(i=0; i<5; i++){
+        aux[i] = palavra[numero][i];
+    }
+    //printf("\nPALAVRA SORTEADA: %s", aux);
+    for(tentativas = 5; tentativas > 0; tentativas--){
+        
+        printf("\n**Voce tem %d tentativas!**", tentativas);
+        printf("\nTente adivinhar uma palavra aleatória com 5 letras: ");
+        gets(digitada);
+        __fpurge(stdin);
+        
+        tamanho = strlen(digitada);
+        //apenas palavras de 5 letras, nao perde a vez se digitar com mais letras
+        while(tamanho != 5){
+            printf("\nSua palavra precisa conter 5 letras!\n");
+            printf("\nDigite novamente: ");
+            gets(digitada);
+            __fpurge(stdin);
+            tamanho = strlen(digitada);
+        }
+        
+        for(i=0; i<5; i++){
+            aux[i] = palavra[numero][i];
+        }
+        //compara strings
+        igual = strncmp(digitada, aux, 5);
+       
+        if(igual == 0){
+            printf("**VOCÊ ACERTOU!**");
+            return 1;
+        }
+        else{//"ordenando" e comparando uma letra do aux com todas do digitada
+            for(i=0; i<5; i++){//percorre aux
+                for(j=0; j<5; j++){//percorre digitada 
+                    if(aux[i] == digitada[i] && a == 0){
+                        printf("\nESSA PALAVRA CONTEM A LETRA '%c' NA POSICAO '%d'\n", digitada[i], i);
+                        a++;
+                    }else if(aux[i] == digitada[j] && a == 0){
+                        printf("\nESSA PALAVRA CONTEM A LETRA '%c' MAS ESTA NA POSICAO ERRADA\n", digitada[j]);
+                        a++;
+                    }
+                }
+                a = 0;
+            }
+        }
+    }
+    
+    if(tentativas == 0){
+        printf("\n\n**VOCÊ PERDEU!**");
+        printf("\nA palavra era '%s'", aux);
+    }
+    
+    return 0;
+}
