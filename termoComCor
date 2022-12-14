@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+//#include "ANSI-color-codes.h"
+#define GREEN      "\e[0;32m" //cores em ANSI utilizadas
+#define YELLOW    "\e[0;33m"
+#define COLOR_RESET "\e[0m"
+
+int main()
+{
+    char palavra[5][5] = {"termo", "facil", "curso", "arara", "beijo"}, digitada[5], aux[5] = {"aaaaa"};
+    int tamanho, numero, i, j, tentativas, a=0, b=0, igual, letra=0, amarelo=0;
+    srand(time(NULL));
+   
+    //gerando numero aleatorio pra palavra
+    numero = 1+rand() %4;
+    for(i=0; i<5; i++){
+        aux[i] = palavra[numero][i];
+    }
+    //printf("\nPALAVRA SORTEADA: %s", aux);
+    clear();
+    for(tentativas = 5; tentativas > 0; tentativas--){
+       
+        printf("\n\n**Voce tem %d tentativas!**", tentativas);
+        printf("\nTente adivinhar uma palavra aleatória com 5 letras: ");
+        gets(digitada);
+        __fpurge(stdin);
+       
+        tamanho = strlen(digitada);
+        //apenas palavras de 5 letras, nao perde a vez se digitar com mais letras
+        while(tamanho != 5){
+            printf("\nSua palavra precisa conter 5 letras!\n");
+            printf("\nDigite novamente: ");
+            gets(digitada);
+            __fpurge(stdin);
+            tamanho = strlen(digitada);
+        }
+       
+        for(i=0; i<5; i++){
+            aux[i] = palavra[numero][i];
+        }
+        //compara strings
+        igual = strncmp(digitada, aux, 5);
+       
+        if(igual == 0){
+            printf("\n**VOCÊ ACERTOU!**");
+            printf("\nA palavra era: ");
+            printf(GREEN "  %s  ", aux);
+            return 1;
+        }
+        else{//"ordenando" e comparando uma letra do aux com todas do digitada
+            printf("\t");
+            for(i=0; i<5; i++){//percorre aux
+                for(j=0; j<5; j++){//percorre digitada
+                    if(aux[i] == digitada[i] && a == 0){
+                        printf(GREEN "%c",digitada[i]);
+                        printf(" " COLOR_RESET);
+                        //cprintf("%c\n", digitada[i], i);
+                        a++;
+                    }else if(aux[j] == digitada[i] && a == 0){
+                        for(int k=0; k<5; k++){
+                            if(aux[k] == digitada[k]){
+                                letra++;
+                            }
+                        }
+                       
+                        if(letra == 0){
+                            printf(YELLOW "%c", digitada[i]);
+                            printf(" " COLOR_RESET);
+                            amarelo++;
+                        }
+                       
+                        //printf("%c\n", digitada[j]);
+                        a++;
+                    }
+                }
+                if(a == 0){
+                   printf("%c ", digitada[i]);
+                }else if(a != 0 && letra != 0 && amarelo == 0){
+                    printf("%c ", digitada[i]);
+                }
+                a = 0;
+                amarelo = 0;
+                letra = 0;
+            }
+        }
+    }
+   
+    if(tentativas == 0){
+        printf("\n\n**VOCÊ PERDEU!**");
+        printf("\nA palavra era '%s'", aux);
+    }
+   
+    return 0;
+}
