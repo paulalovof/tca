@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+//#include "ANSI-color-codes.h"
+#define GREEN      "\e[0;32m" //cores em ANSI utilizadas
+#define YELLOW    "\e[0;33m"
+#define COLOR_RESET "\e[0m"
+
+int main()
+{
+    char palavra[5][5] = {"termo", "facil", "curso", "arara", "beijo"}, digitada[5], aux[5] = {"aaaaa"}, verde;
+    int tamanho, numero, i, j, tentativas, igual, a=0, b=0, amarelo=0, v;
+    srand(time(NULL));
+   
+    //gerando numero aleatorio pra palavra
+    numero = 1+rand() %4;
+    for(i=0; i<5; i++){
+        aux[i] = palavra[numero][i];
+    }
+    //printf("\nPALAVRA SORTEADA: %s", aux);
+            for(i=0; i<5; i++){//percorre aux
+                for(j=0; j<5; j++){//percorre digitada
+                   
+                    if(aux[i] == digitada[i] && a == 0){
+                        printf(GREEN "%c",digitada[i]);
+                        printf(" " COLOR_RESET);
+                        //cprintf("%c\n", digitada[i], i);
+                        a++;
+                        verde = aux[i];
+                        v = i;
+                    }else if(aux[j] == digitada[i] && a == 0 && aux[j] != verde && i != v){
+                        //if(){
+                            printf(YELLOW "%c", digitada[i]);
+                            printf(" " COLOR_RESET);
+                            amarelo++;
+                        //}
+                       
+                        a++;
+                    }
+
+                }
+               
+                if(a == 0){
+                   printf("%c ", digitada[i]);
+                }//else if(a != 0  && amarelo == 0){
+                    //printf("%c ", digitada[i]);
+                //}
+                a = 0;
+                amarelo = 0;
+                //letra = 0;
+            }
+           
+        }
+    }
+   
+    if(tentativas == 0){
+        printf("\n\n**VOCÊ PERDEU!**");
+        printf("\nA palavra era '%s'", aux);
+    }
+   
+    return 0;
+}
