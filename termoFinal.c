@@ -18,7 +18,7 @@ void imprimeInicio()
     printf("- Tente descobrir uma palavra aleatória de 5 letras\n");
     printf("- Letras verdes faz parte da palvra e estão na posição correta\n");
     printf("- Letras amarelas fazem parte da palavra porém estão na posição errada\n");
-    printf("- VocÃª tem apenas 5 chances para descobrir, será que é capaz?\n");
+    printf("- Voce tem apenas 5 chances para descobrir, será que é capaz?\n");
     printf(BLUE "\t(aperte enter para continuar)\n" COLOR_RESET);
     scanf("%c", &var);
 
@@ -41,30 +41,53 @@ int verificaLetras(char string[5])
 
 void acerto(char palavra[5])
 {
-    printf(BLUE "\n\t--- VOCÃŠ ACERTOU! ---" COLOR_RESET);
+    printf(BLUE "\n\t--- VOCE ACERTOU! ---" COLOR_RESET);
     printf("\n\tA palavra era: ");
     printf(GREEN "  %s  \n", palavra);
 }
 
-void erro(char palavra[5])
+int erro(char palavra[5])
 {
-    printf(RED "\n\n\n\n\t  --- VOCÃŠ PERDEU! ---" COLOR_RESET);
+    int denovo;
+    
+    printf(RED "\n\n\n\n\t  --- VOCE PERDEU! ---" COLOR_RESET);
     printf("\n\tA palavra era '%s'\n", palavra);
-    printf("\nQuer jogador novamente?\n (1) Sim\n (2) NÃ£o\n -");
+    printf("\nQuer jogador novamente?\n (1) Sim\n (2) Nao\n -");
+    scanf("%d", &denovo);
+    __fpurge(stdin);
+
+    return denovo;
+}
+
+void zerarPosicao(int verificador[5])
+{
+    for (int j = 0; j < 5; j++)
+    {
+        verificadorDePosicao[j] = 6;
+    }
+}
+
+int gerarNumAleatorio()
+{
+    int numero;
+
+    srand(time(NULL));
+    numero = rand() % 100;
+    imprimeInicio();
+
+    return numero;   
 }
 
 int main()
 {
-    char digitada[5], aux[5];
-    int tamanho, numero, tentativas, igual, a = 0, bl[5] = {6, 6, 6, 6, 6}, denovo;
+    char digitada[5], vetorArrumado[5];
+    int tamanho, numero, tentativas, igual, contadorLetraCerta = 0, verificadorDePosicao[5] = {6, 6, 6, 6, 6}, denovo;
 
     do
     {
 
         //gerando numero aleatorio pra palavra
-        srand(time(NULL));
-        numero = rand() % 100;
-        imprimeInicio();
+        
 
         for (tentativas = 5; tentativas > 0; tentativas--)
         {
@@ -75,7 +98,7 @@ int main()
             __fpurge(stdin);
 
             tamanho = strlen(digitada);
-            //apenas palavras de 5 letras, nao perde a vez se digitar com mais letras
+            
             while (tamanho != 5)
             {
                 tamanho = verificaLetras(digitada);
@@ -83,69 +106,63 @@ int main()
 
             for (int i = 0; i < 5; i++)
             {
-                aux[i] = palavra[numero][i];
+                vetorArrumado[i] = palavra[numero][i];
             }
-            //compara strings
-            igual = strncmp(digitada, aux, 5);
+            
+            igual = strncmp(digitada, vetorArrumado, 5);
 
             if (igual == 0)
             {
-                acerto(aux);
+                acerto(vetorArrumado);
                 return 1;
             }
 
             else
-            { //"ordenando" e comparando uma letra do aux com todas do digitada
+            { 
                 printf("\t");
 
                 for (int i = 0; i < 5; i++)
                 {
-
-                    for (int k = 0; k < 5; k++)
-                    { //ve quantas letras verdes tem na digitada
-                        if (aux[k] == digitada[k])
+                    for (int j = 0; j < 5; j++)
+                    {
+                        if (vetorArrumado[j] == digitada[j])
                         {
-                            bl[k] = k; //variavel bl recebe a posicao da letra verde
+                            verificadorDePosicao[j] = j; 
                         }
                     }
 
                     for (int j = 0; j < 5; j++)
                     {
 
-                        if (aux[i] == digitada[i] && a == 0)
-                        { //printa verde
+                        if (vetorArrumado[i] == digitada[i] && contadorLetraCerta == 0)
+                        {
                             printf(GREEN "%c", digitada[i]);
                             printf(" " COLOR_RESET);
-                            a++; //contador pra entrar apenas em uma opção por letra (ou é verde ou é amarelo ou nao é nada, nao pode ser os dois)
+                            contadorLetraCerta++; 
                         }
 
-                        if (aux[j] == digitada[i] && a == 0 && bl[j] == 6 && i != bl[i])
-                        { //printa amarelo se nao tiver nenhuma verde na posicao certa
+                        if (vetorArrumado[j] == digitada[i] && contadorLetraCerta == 0 && verificadorDePosicao[j] == 6 && i != verificadorDePosicao[i])
+                        {
                             printf(YELLOW "%c", digitada[i]);
                             printf(" " COLOR_RESET);
-                            a++;
+                            contadorLetraCerta++;
                         }
                     }
 
-                    if (a == 0)
+                    if (contadorLetraCerta == 0)
                     {
-                        printf("%c ", digitada[i]); //printa branca se nao tiver entrado nem no verde nem no amarelo
+                        printf("%c ", digitada[i]);
                     }
-                    a = 0;
+                    contadorLetraCerta = 0;
 
-                    for (int j = 0; j < 5; j++)
-                    { //for para zerar a variavel bl para verificar a proxima palavra no proximo laço
-                        bl[j] = 6;
-                    }
+                    zerarPosicao(verificadorDePosicao);
                 }
             }
         }
 
         if (tentativas == 0)
         {
-            erro(aux);
-            scanf("%d", &denovo);
-            __fpurge(stdin);
+            denovo = erro(vetorArrumado);
         }
     } while (denovo != 2);
 
