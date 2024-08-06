@@ -63,7 +63,7 @@ void zerarPosicao(int verificador[5])
 {
     for (int j = 0; j < 5; j++)
     {
-        verificadorDePosicao[j] = 6;
+        verificador[j] = 6;
     }
 }
 
@@ -87,6 +87,7 @@ int main()
     {
 
         //gerando numero aleatorio pra palavra
+        numero = gerarNumAleatorio();
         
 
         for (tentativas = 5; tentativas > 0; tentativas--)
